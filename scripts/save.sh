@@ -17,6 +17,7 @@ function genCmdStr() {
 	cmd=""
 	cmd+="set +o >> $backup_file;"
 	cmd+="export -p >> $backup_file;"
+	cmd+="export -f >> $backup_file;"
 	echo "$cmd"
 }
 runCommandInAllPanes
