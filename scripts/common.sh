@@ -20,18 +20,19 @@ function runCommandInAllPanes() {
 	for s in $(tmux list-sessions -F '#S'); do
 		for w in $(tmux list-windows -F '#I' -t $s); do
 			for p in $(tmux list-panes -F '#P' -t $s:$w); do
-				echo "Saving bash for $s:$w.$p ..."
 				# put forground process into background
 				tmux send-keys -t $s:$w.$p C-[
 				sleep 0.5
 				tmux send-keys -t $s:$w.$p C-z
 
-				# clean cmd line and go into insert mode
-				# due to my special vim bash wizardry
-				tmux send-keys -t $s:$w.$p i C-e C-u
+				# go into insert mode if bash is in vi mode (set -o vi)
+				tmux send-keys -t $s:$w.$p i
+				# go end of line and clean cmd line
+				tmux send-keys -t $s:$w.$p C-e C-u
 
 				if declare -F genCmdStr > /dev/null; then local command=$(genCmdStr $s $w $p); fi
 				tmux send-keys -t $s:$w.$p "${command:-:;} [[ \$(jobs -p | wc -l) -gt 0 ]] && fg || :" C-m
+				echo "Run command in $s:$w.$p ..."
 			done
 		done
 	done
