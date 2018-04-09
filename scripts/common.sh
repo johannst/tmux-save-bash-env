@@ -32,7 +32,7 @@ function runCommandInAllPanes() {
 
 				if declare -F genCmdStr > /dev/null; then local command=$(genCmdStr $s $w $p); fi
 				tmux send-keys -t $s:$w.$p "${command:-:;} [[ \$(jobs -p | wc -l) -gt 0 ]] && fg || :" C-m
-				echo "Run command in $s:$w.$p ..."
+				tmux display-message "Run command in $s:$w.$p ..."
 			done
 		done
 	done
